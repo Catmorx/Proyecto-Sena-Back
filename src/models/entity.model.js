@@ -2,9 +2,9 @@ import { pool } from '../config/config.js';
 
 export const create = async (data) => {
     try {
-        const { foreigner, typeIdentification, email, phone, firstName, lastName, numberIdentification, verificationDigit, companyName, economyActivityId, healthId, bloodId } = data;
+        const { foreigner, typeIdentification, email, phone, firstName, lastName, entityType, numberIdentification, verificationDigit, companyName, economyActivityId, healthId, bloodId, paymentId } = data;
         const date = new Date();
-        const [rows] = await pool.query('INSERT INTO entity (foreigner, type_identification, email, phone, first_name, last_name, number_identification, verification_digit, company_name, economy_activity_id_economy, health_entity_id_health, blood_type_id_blood, created_date) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)', [foreigner, typeIdentification, email, phone, firstName, lastName, numberIdentification, verificationDigit, companyName, economyActivityId, healthId, bloodId, date]);
+        const [rows] = await pool.query('INSERT INTO entity (foreigner, type_identification, email, phone, first_name, last_name, entity_type, number_identification, verification_digit, company_name, economy_activity_id_economy, health_entity_id_health, blood_type_id_blood, created_date, payment_method_id_payment) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [foreigner, typeIdentification, email, phone, firstName, lastName, entityType, numberIdentification, verificationDigit, companyName, economyActivityId, healthId, bloodId, date, paymentId]);
         return {
             id: rows.insertId,
             foreigner,
@@ -13,13 +13,15 @@ export const create = async (data) => {
             phone,
             firstName,
             lastName,
+            entityType,
             numberIdentification,
             verificationDigit,
             companyName,
             economyActivityId,
             healthId,
             bloodId,
-            created_date: new Date(),
+            created_date: date,
+            paymentId,
         };
     } catch (e) {
         return e;
@@ -27,7 +29,8 @@ export const create = async (data) => {
 };
 export const update = async (data) => {
     try {
-        const { id, foreigner, typeIdentification, email, phone, firstName, lastName, numberIdentification, verificationDigit, companyName, economyActivityId, healthId, bloodId } = data;
+        const { id, foreigner, typeIdentification, email, phone, firstName, lastName, entityType, numberIdentification, verificationDigit, companyName, economyActivityId, healthId, bloodId, paymentId } = data;
+        console.log(paymentId)
         await pool.query(`UPDATE entity 
             SET
             foreigner = IFNULL(?, foreigner),
@@ -36,14 +39,16 @@ export const update = async (data) => {
             phone = IFNULL(?, phone),
             first_name = IFNULL(?, first_name),
             last_name = IFNULL(?, last_name),
+            entity_type = IFNULL(?, entity_type),
             number_identification = IFNULL(?, number_identification),
             verification_digit = IFNULL(?, verification_digit),
             company_name = IFNULL(?, company_name),
             economy_activity_id_economy = IFNULL(?, economy_activity_id_economy),
             health_entity_id_health = IFNULL(?, health_entity_id_health),
-            blood_type_id_blood = IFNULL(?, blood_type_id_blood)
+            blood_type_id_blood = IFNULL(?, blood_type_id_blood),
+            payment_method_id_payment = IFNULL(?, payment_method_id_payment)
             WHERE id_entity = ? `,
-        [foreigner, typeIdentification, email, phone, firstName, lastName, numberIdentification, verificationDigit, companyName, economyActivityId, healthId, bloodId, id]);
+        [foreigner, typeIdentification, email, phone, firstName, lastName, entityType, numberIdentification, verificationDigit, companyName, economyActivityId, healthId, bloodId, paymentId, id]);
         const [rows] = await pool.query('SELECT * FROM entity WHERE id_entity =?', [id]);
         return rows;
     } catch (e) {
@@ -59,34 +64,10 @@ export const deleteById = async (data) => {
         return e;
     }
 };
-export const getAll = async () => {
+export const getAll = async (data) => {
     try {
-        const [rows] = await pool.query(`
-                SELECT 
-                    e.id_entity,
-                    e.foreigner,
-                    e.created_date,
-                    e.type_identification,
-                    e.email,
-                    e.phone,
-                    e.first_name,
-                    e.last_name,
-                    e.number_identification,
-                    e.verification_digit,
-                    e.company_name,
-                    eco.activity_name AS economy_activity_name,
-                    health.health_name AS health_name,
-                    b.blood_name AS blood_name
-                FROM
-                    entity AS e
-                        LEFT JOIN
-                    economy_activity eco ON e.economy_activity_id_economy = eco.id_economy
-                        LEFT JOIN
-                    health_entity health ON e.health_entity_id_health = health.id_health
-                        LEFT JOIN
-                    blood_type b ON e.blood_type_id_blood = b.id_blood
-                    
-                `);
+        const { entityType } = data;
+        const [rows] = await pool.query(`SELECT * FROM entity WHERE entity.entity_type = ?`, [entityType]);
         return rows;
     } catch (e) {
         return e;
@@ -95,30 +76,7 @@ export const getAll = async () => {
 export const getById = async (data) => {
     try {
         const { id } = data;
-        const [rows] = await pool.query(`SELECT 
-                    e.id_entity,
-                    e.foreigner,
-                    e.created_date,
-                    e.type_identification,
-                    e.email,
-                    e.phone,
-                    e.first_name,
-                    e.last_name,
-                    e.number_identification,
-                    e.verification_digit,
-                    e.company_name,
-                    eco.activity_name AS economy_activity_name,
-                    health.health_name AS health_name,
-                    b.blood_name AS blood_name
-                FROM
-                    entity AS e
-                        LEFT JOIN
-                    economy_activity eco ON e.economy_activity_id_economy = eco.id_economy
-                        LEFT JOIN
-                    health_entity health ON e.health_entity_id_health = health.id_health
-                        LEFT JOIN
-                    blood_type b ON e.blood_type_id_blood = b.id_blood
-                WHERE id_entity =?`, [id]);
+        const [rows] = await pool.query(`SELECT * FROM entity WHERE id_entity =?`, [id]);
         return rows;
     } catch (e) {
         return e;

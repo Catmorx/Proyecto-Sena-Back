@@ -11,8 +11,8 @@ export const createAdress = async (req, res) => {
 export const updateAdress = async (req, res) => {
     try {
         const { id } = req.params;
-        const { adressDr1, adressDr2, country, town, zip, memoAdress, entityId } = req.body;
-        const data = { id, adressDr1, adressDr2, country, town, zip, memoAdress, entityId };
+        const { adressDr1, country, town, zip, memoAdress, entityId } = req.body;
+        const data = { id, adressDr1, country, town, zip, memoAdress, entityId };
         const success = await update(data);
         if (success.length == 0) return res.status(404).json({ status: 'Not Found' });
         res.status(202).json(success);

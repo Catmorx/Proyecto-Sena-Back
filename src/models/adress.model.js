@@ -2,8 +2,8 @@ import { pool } from '../config/config.js';
 
 export const create = async (data) => {
     try {
-        const { adressDr1, adressDr2, country, town, zip, memoAdress, entityId} = data;
-        const [rows] = await pool.query('INSERT INTO adress (adress_dr1, adress_dr2, country, town, zip, memo_adress, entity_id_entity) VALUES (?,?,?,?,?,?,?)', [adressDr1, adressDr2, country, town, zip, memoAdress, entityId]);
+        const { adressDr1, country, town, zip, memoAdress, entityId} = data;
+        const [rows] = await pool.query('INSERT INTO adress (adress_dr1, country, town, zip, memo_adress, entity_id_entity) VALUES (?,?,?,?,?,?)', [adressDr1, country, town, zip, memoAdress, entityId]);
         return {
             id: rows.insertId,
             adressDr1, adressDr2, country, town, zip, memoAdress, entityId,
@@ -14,18 +14,17 @@ export const create = async (data) => {
 };
 export const update = async (data) => {
     try {
-        const { id, adressDr1, adressDr2, country, town, zip, memoAdress, entityId } = data;
+        const { id, adressDr1, country, town, zip, memoAdress, entityId } = data;
         await pool.query(`UPDATE adress 
             SET
             adress_dr1 = IFNULL(?, adress_dr1),
-            adress_dr2 = IFNULL(?, adress_dr2),
             country = IFNULL(?, country),
             town = IFNULL(?, town),
             zip = IFNULL(?, zip),
             memo_adress = IFNULL(?, memo_adress),
             entity_id_entity = IFNULL(?, entity_id_entity)
             WHERE id_adress = ? `,
-        [adressDr1, adressDr2, country, town, zip, memoAdress, entityId, id]);
+        [adressDr1, country, town, zip, memoAdress, entityId, id]);
         const [rows] = await pool.query('SELECT * FROM adress WHERE id_adress =?', [id]);
         return rows;
     } catch (e) {

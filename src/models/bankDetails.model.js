@@ -2,11 +2,11 @@ import { pool } from '../config/config.js';
 
 export const create = async (data) => {
     try {
-        const { typeAccount, numberAccount, bankCode, is_prefer, entityId} = data;
-        const [rows] = await pool.query('INSERT INTO bank_details (type_account, number_account, bank_code, is_prefer, entity_id_entity) VALUES (?,?,?,?,?)', [typeAccount, numberAccount, bankCode, is_prefer, entityId]);
+        const { typeAccount, numberAccount, bankCode, isPrefer, entityId} = data;
+        const [rows] = await pool.query('INSERT INTO bank_details (type_account, number_account, bank_code, is_prefer, entity_id_entity) VALUES (?,?,?,?,?)', [typeAccount, numberAccount, bankCode, isPrefer, entityId]);
         return {
             id: rows.insertId,
-            typeAccount, numberAccount, bankCode, is_prefer, entityId
+            typeAccount, numberAccount, bankCode, isPrefer, entityId
         };
     } catch (e) {
         return e;
@@ -14,7 +14,7 @@ export const create = async (data) => {
 };
 export const update = async (data) => {
     try {
-        const { id, typeAccount, numberAccount, bankCode, is_prefer, entityId } = data;
+        const { id, typeAccount, numberAccount, bankCode, isPrefer, entityId } = data;
         await pool.query(`UPDATE bank_details 
             SET
             type_account = IFNULL(?, type_account),
@@ -23,7 +23,7 @@ export const update = async (data) => {
             is_prefer = IFNULL(?, is_prefer),
             entity_id_entity = IFNULL(?, entity_id_entity)
             WHERE id_bank_details = ? `,
-        [typeAccount, numberAccount, bankCode, is_prefer, entityId, id]);
+        [typeAccount, numberAccount, bankCode, isPrefer, entityId, id]);
         const [rows] = await pool.query('SELECT * FROM bank_details WHERE id_bank_details =?', [id]);
         return rows;
     } catch (e) {

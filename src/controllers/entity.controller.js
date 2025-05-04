@@ -11,8 +11,8 @@ export const createEntity = async (req, res) => {
 export const updateEntity = async (req, res) => {
     try {
         const { id } = req.params;
-        const { foreigner, typeIdentification, email, phone, firstName, lastName, numberIdentification, verificationDigit, companyName, economyActivityId, healthId, bloodId } = req.body;
-        const data = { id, foreigner, typeIdentification, email, phone, firstName, lastName, numberIdentification, verificationDigit, companyName, economyActivityId, healthId, bloodId };
+        const { foreigner, typeIdentification, email, phone, firstName, lastName, numberIdentification, verificationDigit, companyName, economyActivityId, healthId, bloodId, paymentId } = req.body;
+        const data = { id, foreigner, typeIdentification, email, phone, firstName, lastName, numberIdentification, verificationDigit, companyName, economyActivityId, healthId, bloodId, paymentId };
         const success = await update(data);
         if (success.length == 0) return res.status(404).json({ status: 'Not Found' });
         res.status(202).json(success);
@@ -31,7 +31,7 @@ export const deleteEntityById = async (req, res) => {
 };
 export const getAllEntity = async (req, res) => {
     try {
-        const success = await getAll();
+        const success = await getAll(req.query);
         res.status(200).json(success);
     } catch (error) {
         res.status(500).json({ error: error.message });
