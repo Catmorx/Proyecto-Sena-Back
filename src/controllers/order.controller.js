@@ -1,4 +1,4 @@
-import { create, update, deleteById, getAll, getById } from '../models/order.model.js';
+import { create, update, deleteById, getAll, getById, deleteByIdItemOrder } from '../models/order.model.js';
 
 export const createOrder = async (req, res) => {
     try {
@@ -11,9 +11,10 @@ export const createOrder = async (req, res) => {
 export const updateOrder = async (req, res) => {
     try {
         const { id } = req.params;
-        const { transactionNumber, lastModified, salesRep, taxAmount, memo, discountAmount, entityId  } = req.body;
-        const data = { id, transactionNumber, lastModified, salesRep, taxAmount, memo, discountAmount, entityId  };
+        const { salesRep, taxAmount, subtotal, total, memo, discountAmount, entityId, items } = req.body;
+        const data = { id, salesRep, taxAmount, subtotal, total, memo, discountAmount, entityId, items};
         const success = await update(data);
+        // console.log('success', success);
         if (success.length == 0) return res.status(404).json({ status: 'Not Found' });
         res.status(202).json(success);
     } catch (error) {
@@ -23,6 +24,15 @@ export const updateOrder = async (req, res) => {
 export const deleteOrderById = async (req, res) => {
     try {
         const success = await deleteById(req.params);
+        if (success.length == 0) return res.status(404).json({ status: 'Not Found' });
+        res.status(200).json(success);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+export const deleteOrderByIdItem = async (req, res) => {
+    try {
+        const success = await deleteByIdItemOrder(req.params);
         if (success.length == 0) return res.status(404).json({ status: 'Not Found' });
         res.status(200).json(success);
     } catch (error) {

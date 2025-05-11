@@ -1,13 +1,17 @@
 import mysql from 'mysql2/promise';
-
-export const PORT = '3000';
+import { config } from "dotenv";
+config();
+export const PORT = process.env.FRONT_PORT || 4000;
+export const frontUrl = process.env.FRONT_URL 
+export const jwtSecret = process.env.JWT_SECRET 
 export const connection = {
-    host: 'localhost',
-    port: 3306,
-    user: 'root',
-    password: 'root',
-    database: 'mrxhex'
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database:  process.env.DATABASE
 };
+
 export const pool = mysql.createPool(connection);
 
 // Conectar a MySQL

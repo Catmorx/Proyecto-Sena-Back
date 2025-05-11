@@ -3,6 +3,7 @@ import { create, update, deleteById, getAll, getById } from '../models/entity.mo
 export const createEntity = async (req, res) => {
     try {
         const success = await create(req.body);
+        console.log('success', success)
         res.status(201).json(success);
     } catch (error) {
         res.status(500).json({ error: error.message });
