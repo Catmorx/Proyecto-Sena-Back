@@ -11,8 +11,8 @@ export const createTechnicalData = async (req, res) => {
 export const updateTechnicalData = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name } = req.body;
-        const data = { id, name };
+        const { description, composition, madeYarn, printedFabric, typeFabric, name } = req.body;
+        const data = { id, description, composition, madeYarn, printedFabric, typeFabric, name };
         const success = await update(data);
         if (success.length == 0) return res.status(404).json({ status: 'Not Found' });
         res.status(202).json(success);

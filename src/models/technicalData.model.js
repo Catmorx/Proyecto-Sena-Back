@@ -22,10 +22,8 @@ export const update = async (data) => {
             composition = IFNULL(?, composition),
             made_yarn = IFNULL(?, made_yarn),
             printed_fabric = IFNULL(?, printed_fabric),
-            created_date = IFNULL(?, created_date),
-            verification_digit = IFNULL(?, verification_digit),
-            name = IFNULL(?, name),
-            type_fabric_id_type_fabric = IFNULL(?, type_fabric_id_type_fabric)
+            type_fabric = IFNULL(?, type_fabric),
+            name = IFNULL(?, name)
             WHERE id_technical_data = ? `,
             [description, composition, madeYarn, printedFabric, typeFabric, name, id]);
         const [rows] = await pool.query('SELECT * FROM technical_data WHERE id_technical_data =?', [id]);
